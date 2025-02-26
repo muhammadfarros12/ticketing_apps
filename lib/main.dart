@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
-import 'package:ticketing_apps/ui/intro/splash_screen.dart';
+import 'package:ticketing_apps/ui/auth/splash_screen.dart';
 
 void main() {
   runApp(MyApp());

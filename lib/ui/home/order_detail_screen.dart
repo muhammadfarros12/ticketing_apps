@@ -6,6 +6,7 @@ import 'package:ticketing_apps/core/components/spaces.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
 import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
 import 'package:ticketing_apps/core/extensions/idr_currency.dart';
+import 'package:ticketing_apps/ui/dialog/payment_qris_dialog.dart';
 import 'package:ticketing_apps/ui/home/model/product_model.dart';
 import 'package:ticketing_apps/ui/widgets/order_detail_card.dart';
 import 'package:ticketing_apps/ui/widgets/payment_method_button.dart';
@@ -110,7 +111,14 @@ class OrderDetailScreen extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: Button.filled(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (paymentButtonIndex == 0) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => PaymentQrisDialog(),
+                        );
+                      }
+                    },
                     label: 'Proses',
                     borderRadius: 20,
                   ),

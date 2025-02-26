@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ticketing_apps/core/assets/assets.gen.dart';
 import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
-import 'package:ticketing_apps/ui/intro/login_screen.dart';
+import 'package:ticketing_apps/ui/auth/login_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});

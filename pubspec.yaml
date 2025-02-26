@@ -15,6 +15,9 @@ dependencies:
   flutter_svg_provider: ^1.0.7
   intl: ^0.20.2
   flutter_svg: ^2.0.17
+  qr_flutter: ^4.1.0
+  timer_count_down: ^2.2.2
+  mobile_scanner: ^6.0.6
 
 dev_dependencies:
   flutter_test:
