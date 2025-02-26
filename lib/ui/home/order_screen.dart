@@ -3,8 +3,10 @@ import 'package:ticketing_apps/core/assets/assets.gen.dart';
 import 'package:ticketing_apps/core/components/button.dart';
 import 'package:ticketing_apps/core/components/spaces.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
+import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
 import 'package:ticketing_apps/core/extensions/idr_currency.dart';
 import 'package:ticketing_apps/ui/home/model/product_model.dart';
+import 'package:ticketing_apps/ui/home/order_detail_screen.dart';
 
 class OrderScreen extends StatelessWidget {
   const OrderScreen({super.key});
@@ -113,7 +115,17 @@ class OrderScreen extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Button.filled(
-                  onPressed: () {},
+                  onPressed: () {
+                    context.push(
+                      OrderDetailScreen(
+                        products: [
+                          dummyProducts[0],
+                          dummyProducts[1],
+                          dummyProducts[4],
+                        ],
+                      ),
+                    );
+                  },
                   label: 'Process',
                   borderRadius: 20,
                 ),
