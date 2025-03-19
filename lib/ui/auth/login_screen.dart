@@ -7,7 +7,7 @@ import 'package:ticketing_apps/core/components/spaces.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
 import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
 import 'package:ticketing_apps/data/localdatasources/auth_local_datasource.dart';
-import 'package:ticketing_apps/ui/auth/bloc/auth_bloc.dart';
+import 'package:ticketing_apps/ui/auth/bloc/login/auth_bloc.dart';
 import 'package:ticketing_apps/ui/home/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {

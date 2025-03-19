@@ -9,6 +9,7 @@ import 'package:ticketing_apps/ui/home/order_screen.dart';
 import 'package:ticketing_apps/ui/home/qr_screen.dart';
 import 'package:ticketing_apps/ui/home/setting_screen.dart';
 import 'package:ticketing_apps/ui/home/ticket_screen.dart';
+import 'package:ticketing_apps/ui/logout_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -23,7 +24,8 @@ class _MainScreenState extends State<MainScreen> {
     OrderScreen(),
     TicketScreen(),
     HistoryScreen(),
-    SettingScreen(),
+    // SettingScreen(),
+    LogoutScreen(),
   ];
 
   @override
