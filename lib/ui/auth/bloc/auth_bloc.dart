@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:ticketing_apps/data/datasources/auth_remote_datasource.dart';
+import 'package:ticketing_apps/data/remotedatasources/auth_remote_datasource.dart';
 import 'package:ticketing_apps/model/request/login_request_model.dart';
 import 'package:ticketing_apps/model/response/login_response_model.dart';
 

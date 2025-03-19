@@ -6,6 +6,7 @@ import 'package:ticketing_apps/core/components/custom_text_field.dart';
 import 'package:ticketing_apps/core/components/spaces.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
 import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
+import 'package:ticketing_apps/data/localdatasources/auth_local_datasource.dart';
 import 'package:ticketing_apps/ui/auth/bloc/auth_bloc.dart';
 import 'package:ticketing_apps/ui/home/main_screen.dart';
 
@@ -62,7 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           listener: (context, state) {
                             state.maybeWhen(
                               orElse: () {},
-                              success: (data) {
+                              success: (data) async {
+                                await AuthLocalDatasource().saveAuthData(data);
                                 context.pushReplacement(MainScreen());
                               },
                               error: (message) {
