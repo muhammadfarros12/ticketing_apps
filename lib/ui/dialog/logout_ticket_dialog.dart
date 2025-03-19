@@ -3,6 +3,7 @@ import 'package:ticketing_apps/core/components/button.dart';
 import 'package:ticketing_apps/core/components/spaces.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
 import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
+import 'package:ticketing_apps/ui/auth/splash_screen.dart';
 
 class LogoutTicketDialog extends StatelessWidget {
   const LogoutTicketDialog({super.key});
@@ -43,7 +44,7 @@ class LogoutTicketDialog extends StatelessWidget {
               SpaceWidth(8),
               Flexible(
                 child: Button.filled(
-                  onPressed: () => context.pop(),
+                  onPressed: () => context.pushReplacement(SplashScreen()),
                   label: 'Logout',
                   borderRadius: 8,
                   height: 44,

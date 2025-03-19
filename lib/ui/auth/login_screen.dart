@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketing_apps/core/assets/assets.gen.dart';
 import 'package:ticketing_apps/core/components/button.dart';
 import 'package:ticketing_apps/core/components/custom_text_field.dart';
 import 'package:ticketing_apps/core/components/spaces.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
 import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
+import 'package:ticketing_apps/ui/auth/bloc/auth_bloc.dart';
 import 'package:ticketing_apps/ui/home/main_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final emailController = TextEditingController();
@@ -49,13 +56,52 @@ class LoginScreen extends StatelessWidget {
                           obscureText: true,
                           isOutlineBorder: false,
                         ),
+
                         SpaceHeight(86),
-                        Button.filled(
-                          onPressed: () {
-                            context.pushReplacement(MainScreen());
+                        BlocListener<AuthBloc, AuthState>(
+                          listener: (context, state) {
+                            state.maybeWhen(
+                              orElse: () {},
+                              success: (data) {
+                                context.pushReplacement(MainScreen());
+                              },
+                              error: (message) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(message),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              },
+                            );
                           },
-                          label: 'Login',
+                          child: BlocBuilder<AuthBloc, AuthState>(
+                            builder: (context, state) {
+                              return state.maybeWhen(
+                                orElse: () {
+                                  return Button.filled(
+                                    onPressed: () {
+                                      context.read<AuthBloc>().add(
+                                        AuthEvent.login(
+                                          email: emailController.text,
+                                          password: passwordController.text,
+                                        ),
+                                      );
+                                    },
+                                    // context.pushReplacement(MainScreen());
+                                    label: 'Login',
+                                  );
+                                },
+                                loading: () {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                              );
+                            },
+                          ),
                         ),
+
                         SpaceHeight(120),
                         Center(child: Assets.images.logo.image(height: 40)),
                       ],
