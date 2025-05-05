@@ -6,7 +6,9 @@ import 'package:ticketing_apps/core/components/spaces.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
 import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
 import 'package:ticketing_apps/core/extensions/idr_currency.dart';
+import 'package:ticketing_apps/model/request/order_item.dart';
 import 'package:ticketing_apps/model/response/product_response_model.dart';
+import 'package:ticketing_apps/ui/home/bloc/checkout/checkout_bloc.dart';
 import 'package:ticketing_apps/ui/home/bloc/product/product_bloc.dart';
 import 'package:ticketing_apps/ui/home/model/product_model.dart';
 import 'package:ticketing_apps/ui/home/order_detail_screen.dart';
@@ -44,9 +46,6 @@ class _OrderScreenState extends State<OrderScreen> {
             itemCount: products.length,
             itemBuilder: (context, index) {
               final Product item = products[index];
-
-              // final quantityNotifier = ValueNotifier(0);
-
               return Container(
                 padding: EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -60,41 +59,54 @@ class _OrderScreenState extends State<OrderScreen> {
                       children: [
                         Expanded(
                           child: Text(
-                            // item.productName,
                             item.name ?? '',
                             style: TextStyle(fontSize: 15),
                           ),
                         ),
                         InkWell(
                           onTap: () {
-                            // if (quantityNotifier.value > 0) {
-                            //   quantityNotifier.value--;
-                            // }
+                            context.read<CheckoutBloc>().add(
+                              CheckoutEvent.removeCheckout(item),
+                            );
                           },
                           child: Assets.icons.reduceQuantity.svg(),
                         ),
-                        // ValueListenableBuilder(
-                        //   valueListenable: quantityNotifier,
-                        //   builder:
-                        //       (context, value, _) => Text(
-                        //         '$value',
-                        //         style: TextStyle(fontWeight: FontWeight.bold),
-                        //       ),
-                        // ),
-                        Text(
-                          '0',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+
+                        BlocBuilder<CheckoutBloc, CheckoutState>(
+                          builder: (context, state) {
+                            final int quantity = state.maybeWhen(
+                              success: (product) {
+                                return product
+                                    .firstWhere(
+                                      (element) =>
+                                          element.product.id == item.id,
+                                      orElse:
+                                          () => OrderItem(
+                                            product: item,
+                                            quantity: 0,
+                                          ),
+                                    )
+                                    .quantity;
+                              },
+                              orElse: () => 0,
+                            );
+                            return Text(
+                              quantity.toString(),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            );
+                          },
                         ),
                         InkWell(
                           onTap: () {
-                            // quantityNotifier.value++
+                            context.read<CheckoutBloc>().add(
+                              CheckoutEvent.addCheckout(item),
+                            );
                           },
                           child: Assets.icons.addQuantity.svg(),
                         ),
                       ],
                     ),
                     Text(
-                      // item.type,
                       item.category?.name ?? '',
                       style: TextStyle(fontSize: 11),
                     ),
@@ -106,19 +118,36 @@ class _OrderScreenState extends State<OrderScreen> {
                           item.price!.currencyFormatRp,
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        // ValueListenableBuilder(
-                        //   valueListenable: quantityNotifier,
-                        //   builder: (context, value, _) {
-                        //     return Text(
-                        //       '0',
-                        //       // (item.price * value).currencyFormatRp,
-                        //       style: TextStyle(fontWeight: FontWeight.bold),
-                        //     );
-                        //   },
-                        // ),
-                        Text(
-                          '0',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        BlocBuilder<CheckoutBloc, CheckoutState>(
+                          builder: (context, state) {
+                            return state.maybeWhen(
+                              success: (product) {
+                                final quantity =
+                                    product
+                                        .firstWhere(
+                                          (element) =>
+                                              element.product.id == item.id,
+                                          orElse:
+                                              () => OrderItem(
+                                                product: item,
+                                                quantity: 0,
+                                              ),
+                                        )
+                                        .quantity;
+                                return Text(
+                                  (item.price! * quantity).currencyFormatRp,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                );
+                              },
+                              orElse:
+                                  () => Text(
+                                    0.toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -143,12 +172,35 @@ class _OrderScreenState extends State<OrderScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text('Order Summary'),
-                    Text(
-                      30000.currencyFormatRp,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                    BlocBuilder<CheckoutBloc, CheckoutState>(
+                      builder: (context, state) {
+                        return state.maybeWhen(
+                          success: (product) {
+                            final total = product.fold(0, (
+                              previousValue,
+                              element,
+                            ) {
+                              return previousValue +
+                                  element.product.price! * element.quantity;
+                            });
+                            return Text(
+                              total.currencyFormatRp,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            );
+                          },
+                          orElse:
+                              () => Text(
+                                0.currencyFormatRp,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                        );
+                      },
                     ),
                   ],
                 ),

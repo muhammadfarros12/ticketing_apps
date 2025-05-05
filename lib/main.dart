@@ -7,6 +7,7 @@ import 'package:ticketing_apps/data/remotedatasources/product_remote_datasource.
 import 'package:ticketing_apps/ui/auth/bloc/login/auth_bloc.dart';
 import 'package:ticketing_apps/ui/auth/splash_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ticketing_apps/ui/home/bloc/checkout/checkout_bloc.dart';
 import 'package:ticketing_apps/ui/home/bloc/product/product_bloc.dart';
 
 void main() async {
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthBloc(AuthRemoteDatasource())),
+        BlocProvider(create: (context) => CheckoutBloc()),
         BlocProvider(create: (context) {
           final remote = ProductRemoteDatasource();
           final local = ProductLocalDatasource.instance;
