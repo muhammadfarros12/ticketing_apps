@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:http/http.dart';
 import 'package:ticketing_apps/data/localdatasources/product_local_datasource.dart';
 import 'package:ticketing_apps/data/remotedatasources/product_remote_datasource.dart';
 import 'package:ticketing_apps/model/response/product_response_model.dart';
@@ -45,7 +44,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           response.getOrElse(() => ProductResponseModel(data: [])).data ?? [],
         );
         product = response.getOrElse(() => ProductResponseModel(data: [])).data ?? [];
-
+        print("total data yang ada: ${product.length}");
         emit(_Success(product));
       }
     });

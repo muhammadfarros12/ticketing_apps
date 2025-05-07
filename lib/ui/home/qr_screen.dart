@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:ticketing_apps/core/assets/assets.gen.dart';
 import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
-import 'package:ticketing_apps/ui/home/model/product_model.dart';
 import 'package:ticketing_apps/ui/home/order_detail_screen.dart';
 
 class QrScreen extends StatefulWidget {
@@ -20,7 +19,7 @@ class _QrScreenState extends State<QrScreen> {
       _barcode = barcodes.barcodes.firstOrNull;
       if (_barcode != null) {
         debugPrint('Scan result -> ${{_barcode!.displayValue}}');
-        context.pushReplacement(OrderDetailScreen(products: dummyProducts));
+        context.pushReplacement(OrderDetailScreen());
       }
     }
   }

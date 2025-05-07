@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:ticketing_apps/model/request/order_model.dart';
 import 'package:ticketing_apps/model/response/product_response_model.dart';
 
 class ProductLocalDatasource {
@@ -104,5 +105,32 @@ class ProductLocalDatasource {
         productMap,
       ).copyWith(category: Category.fromMap(categoryMap));
     });
+  }
+
+  Future<int> insertOrder(OrderModel order) async {
+    final db = await instance.database;
+    // id
+    int id = await db.insert(
+      tableOrders,
+      order.toMapFromLocal(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    // item order
+    for (var orderItem in order.orders) {
+      await db.insert(
+        tableOrderItems,
+        orderItem.toMapFromLocal(id),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+
+    return id;
+  }
+
+  Future<List<OrderModel>> getAllOrder() async {
+    final db = await instance.database;
+    final result = await db.query('orders', orderBy: 'id DESC');
+
+    return result.map((e) => OrderModel.fromLocalMap(e)).toList();
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
 import 'package:ticketing_apps/core/extensions/idr_currency.dart';
-import 'package:ticketing_apps/ui/home/model/product_model.dart';
+import 'package:ticketing_apps/model/request/order_item.dart';
 
 class OrderDetailCard extends StatelessWidget {
-  final ProductModel item;
+  // final ProductModel item;
+  final OrderItem item;
   const OrderDetailCard({super.key, required this.item});
 
   @override
@@ -18,17 +19,18 @@ class OrderDetailCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.productName, style: TextStyle(fontSize: 15)),
-                Text(item.type, style: TextStyle(fontSize: 11)),
+                Text(item.product.name ?? '', style: TextStyle(fontSize: 15)),
+                Text(item.product.category?.name ?? '', style: TextStyle(fontSize: 11)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '${item.price.currencyFormatRp} x ${item.quantity}',
+                      // '${item.price.currencyFormatRp} x ${item.quantity}',
+                      '${item.product.price?.currencyFormatRp} x ${item.quantity}',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      (item.price * item.quantity).currencyFormatRp,
+                      (item.product.price! * item.quantity).currencyFormatRp,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],

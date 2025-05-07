@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:ticketing_apps/core/assets/assets.gen.dart';
 import 'package:ticketing_apps/core/components/button.dart';
@@ -6,18 +7,22 @@ import 'package:ticketing_apps/core/components/spaces.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
 import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
 import 'package:ticketing_apps/core/extensions/idr_currency.dart';
+import 'package:ticketing_apps/model/request/order_item.dart';
 import 'package:ticketing_apps/ui/dialog/payment_qris_dialog.dart';
 import 'package:ticketing_apps/ui/dialog/payment_tunai_dialog.dart';
-import 'package:ticketing_apps/ui/home/model/product_model.dart';
+import 'package:ticketing_apps/ui/home/bloc/checkout/checkout_bloc.dart';
 import 'package:ticketing_apps/ui/widgets/order_detail_card.dart';
 import 'package:ticketing_apps/ui/widgets/payment_method_button.dart';
 
 class OrderDetailScreen extends StatelessWidget {
-  final List<ProductModel> products;
-  const OrderDetailScreen({super.key, required this.products});
+  // final List<ProductModel> products;
+
+  const OrderDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    int totalPrice = 0;
+    List<OrderItem> orderItem = [];
     int paymentButtonIndex = 0;
     return Scaffold(
       appBar: AppBar(
@@ -30,10 +35,20 @@ class OrderDetailScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView.separated(
-        separatorBuilder: (context, index) => SpaceHeight(20),
-        itemCount: products.length,
-        itemBuilder: (context, index) => OrderDetailCard(item: products[index]),
+      body: BlocBuilder<CheckoutBloc, CheckoutState>(
+        builder: (context, state) {
+          final products = state.maybeWhen(
+            success: (checkout) => checkout,
+            orElse: () {},
+          );
+
+          return ListView.separated(
+            separatorBuilder: (context, index) => SpaceHeight(20),
+            itemCount: products!.length,
+            itemBuilder:
+                (context, index) => OrderDetailCard(item: products[index]),
+          );
+        },
       ),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
@@ -99,12 +114,35 @@ class OrderDetailScreen extends StatelessWidget {
                     children: [
                       Text('Order Summary'),
                       SpaceHeight(10),
-                      Text(
-                        140000.currencyFormatRp,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                      BlocBuilder<CheckoutBloc, CheckoutState>(
+                        builder: (context, state) {
+                          return state.maybeWhen(
+                            success: (product) {
+                              orderItem = product;
+                              final total = product.fold(
+                                0,
+                                (prev, e) => prev + e.product.price! * e.quantity,
+                              );
+                              totalPrice = total;
+                              return Text(
+                                total.currencyFormatRp,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              );
+                            },
+                            orElse: () {
+                              return Text(
+                                0.currencyFormatRp,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              );
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),

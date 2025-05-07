@@ -24,6 +24,15 @@ class OrderItem {
     );
   }
 
+    Map<String, dynamic> toMapFromLocal(int orderId) {
+    return {
+      'id_order': orderId,
+      'id_product': product.id,
+      'quantity': quantity,
+      'price': product.price
+    };
+  }
+
   String toJson() => json.encode(toMap());
 
   factory OrderItem.fromJson(String source) => OrderItem.fromMap(json.decode(source));

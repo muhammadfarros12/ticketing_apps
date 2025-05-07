@@ -10,7 +10,6 @@ import 'package:ticketing_apps/model/request/order_item.dart';
 import 'package:ticketing_apps/model/response/product_response_model.dart';
 import 'package:ticketing_apps/ui/home/bloc/checkout/checkout_bloc.dart';
 import 'package:ticketing_apps/ui/home/bloc/product/product_bloc.dart';
-import 'package:ticketing_apps/ui/home/model/product_model.dart';
 import 'package:ticketing_apps/ui/home/order_detail_screen.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -210,13 +209,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 child: Button.filled(
                   onPressed: () {
                     context.push(
-                      OrderDetailScreen(
-                        products: [
-                          dummyProducts[0],
-                          dummyProducts[1],
-                          dummyProducts[4],
-                        ],
-                      ),
+                      OrderDetailScreen(),
                     );
                   },
                   label: 'Process',
