@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ticketing_apps/core/components/button.dart';
 import 'package:ticketing_apps/core/components/custom_text_field.dart';
 import 'package:ticketing_apps/core/components/spaces.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
 import 'package:ticketing_apps/core/extensions/build_context_ext.dart';
 import 'package:ticketing_apps/core/extensions/idr_currency.dart';
+import 'package:ticketing_apps/data/localdatasources/product_local_datasource.dart';
+import 'package:ticketing_apps/model/request/order_model.dart';
+import 'package:ticketing_apps/ui/home/bloc/order/order_bloc.dart';
 import 'package:ticketing_apps/ui/home/payment_success_screen.dart';
 
 class PaymentTunaiDialog extends StatefulWidget {
@@ -51,6 +55,8 @@ class _PaymentTunaiDialogState extends State<PaymentTunaiDialog> {
                   onPressed:
                       () => setState(() {
                         paidIndex = 0;
+                        nominalController.text =
+                            widget.totalPrice.currencyFormatRp;
                       }),
                   textColor: paidIndex == 0 ? AppColors.white : AppColors.grey,
                   color:
@@ -65,6 +71,7 @@ class _PaymentTunaiDialogState extends State<PaymentTunaiDialog> {
                   onPressed:
                       () => setState(() {
                         paidIndex = 1;
+                        nominalController.text = 20000.currencyFormatRp;
                       }),
                   textColor: paidIndex == 1 ? AppColors.white : AppColors.grey,
                   color:
@@ -84,6 +91,7 @@ class _PaymentTunaiDialogState extends State<PaymentTunaiDialog> {
                   onPressed:
                       () => setState(() {
                         paidIndex = 2;
+                        nominalController.text = 50000.currencyFormatRp;
                       }),
                   textColor: paidIndex == 2 ? AppColors.white : AppColors.grey,
                   color:
@@ -98,6 +106,7 @@ class _PaymentTunaiDialogState extends State<PaymentTunaiDialog> {
                   onPressed:
                       () => setState(() {
                         paidIndex = 3;
+                        nominalController.text = 90000.currencyFormatRp;
                       }),
                   textColor: paidIndex == 3 ? AppColors.white : AppColors.grey,
                   color:
@@ -110,12 +119,50 @@ class _PaymentTunaiDialogState extends State<PaymentTunaiDialog> {
             ],
           ),
           SpaceHeight(24),
-          Button.filled(
-            disabled: paidIndex == -1,
-            onPressed: () => context.pushReplacement(PaymentSuccessScreen()),
-            label: 'Bayar',
-            fontSize: 16,
-            borderRadius: 16,
+          BlocListener<OrderBloc, OrderState>(
+            listener: (context, state) {
+              state.maybeWhen(
+                success: (
+                  orders,
+                  totalQuantity,
+                  totalPrice,
+                  nominalPayment,
+                  paymentMethod,
+                  cashierId,
+                  cashierName,
+                ) {
+                  final orderModel = OrderModel(
+                    cashierId: cashierId,
+                    cashierName: cashierName,
+                    paymentMethod: paymentMethod,
+                    nominalItem: nominalPayment,
+                    orders: orders,
+                    totalQuantity: totalQuantity,
+                    totalPrice: totalPrice,
+                    transactionTime: DateTime.now().toIso8601String(),
+                    isSync: false,
+                  );
+
+                  ProductLocalDatasource.instance.insertOrder(orderModel);
+                  context.pushReplacement(PaymentSuccessScreen());
+                },
+                orElse: () {},
+              );
+            },
+            child: Button.filled(
+              disabled: paidIndex == -1,
+              onPressed: () {
+                int nominal = int.parse(
+                  nominalController.text
+                      .replaceAll('Rp.', '')
+                      .replaceAll('.', ''),
+                );
+                context.read<OrderBloc>().add(OrderEvent.addNominalPayment(nominal));
+              },
+              label: 'Bayar',
+              fontSize: 16,
+              borderRadius: 16,
+            ),
           ),
         ],
       ),

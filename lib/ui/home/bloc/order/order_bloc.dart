@@ -31,7 +31,24 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       );
     });
     on<_AddNominalPayment>((event, emit) async {
+      var currentState = state as _Success;
+      emit(_Loading());
+      emit(
+        _Success(
+          currentState.orders,
+          currentState.totalQuantity,
+          currentState.totalPrice,
+          currentState.nominalPayment,
+          currentState.paymentMethod,
+          currentState.cashierId,
+          currentState.cashierName,
+        ),
+      );
+    });
 
+    on<_Started>((event, emit)async{
+      emit(_Loading());
+      emit(_Success([], 0, 0, 0, '', 0, ''));
     });
   }
 }

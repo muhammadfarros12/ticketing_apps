@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:ticketing_apps/model/request/order_item.dart';
 
 class OrderModel {
-  final int id;
+  final int? id;
   final int cashierId;
   final String cashierName;
   final String paymentMethod;
@@ -14,7 +14,7 @@ class OrderModel {
   final String transactionTime;
   final bool isSync;
 
-  OrderModel({required this.id, required this.cashierId, required this.cashierName, required this.paymentMethod, required this.nominalItem, required this.orders, required this.totalQuantity, required this.totalPrice, required this.transactionTime, required this.isSync});
+  OrderModel({this.id, required this.cashierId, required this.cashierName, required this.paymentMethod, required this.nominalItem, required this.orders, required this.totalQuantity, required this.totalPrice, required this.transactionTime, required this.isSync});
 
   Map<String, dynamic> toMap() {
     return {

@@ -161,7 +161,7 @@ class OrderDetailScreen extends StatelessWidget {
                           context: context,
                           builder:
                               (context) =>
-                                  PaymentTunaiDialog(totalPrice: 140000),
+                                  PaymentTunaiDialog(totalPrice: totalPrice),
                         );
                       }
                     },
