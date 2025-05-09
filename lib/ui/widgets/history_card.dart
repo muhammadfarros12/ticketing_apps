@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ticketing_apps/core/assets/assets.gen.dart';
 import 'package:ticketing_apps/core/components/spaces.dart';
 import 'package:ticketing_apps/core/constants/color.dart';
 import 'package:ticketing_apps/core/extensions/date_time_ext.dart';
 import 'package:ticketing_apps/core/extensions/idr_currency.dart';
+import 'package:ticketing_apps/core/extensions/string_ext.dart';
+import 'package:ticketing_apps/model/request/order_model.dart';
 import 'package:ticketing_apps/ui/home/model/history_model.dart';
 
 class HistoryCard extends StatelessWidget {
-  final HistoryModel item;
+  // final HistoryModel item;
+  final OrderModel item;
   const HistoryCard({super.key, required this.item});
 
   @override
@@ -26,12 +30,18 @@ class HistoryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.name,
+                // item.name,
+                item.id.toString(),
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
               SpaceHeight(5),
               Text(
-                item.dateTime.toFormattedDayTime(),
+                // item.dateTime.toFormattedDayTime(),
+                DateFormat('dd MM yyyy').format(DateTime(
+                  item.transactionTime.substring(0, 4).toInt,
+                  item.transactionTime.substring(5, 7).toInt,
+                  item.transactionTime.substring(8, 10).toInt
+                  )),
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   color: AppColors.grey,
@@ -41,7 +51,8 @@ class HistoryCard extends StatelessWidget {
           ),
           Spacer(),
           Text(
-            item.price.currencyFormatRp,
+            // item.price.currencyFormatRp,
+            item.nominalItem.currencyFormatRp,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.bold,
